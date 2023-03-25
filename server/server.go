@@ -118,6 +118,7 @@ func (r *ServiceRegistry) ProcessEvents(c chan Event) {
 				}
 
 				r.services.Add(v)
+				svc = r.Service(event.Service)
 			}
 
 			if event.Target != "" {
@@ -130,17 +131,10 @@ func (r *ServiceRegistry) ProcessEvents(c chan Event) {
 					}
 
 					r.services.Add(v)
+					tgt = r.Service(event.Target)
 				}
 
-				if svc = r.Service(event.Service); svc != nil {
-					if tgt = r.Service(event.Target); tgt != nil {
-						r.AddDependency(svc, tgt)
-					} else {
-						log.Printf("%s is  not a valid service", event.Target)
-					}
-				} else {
-					log.Printf("%s is not a valid service", event.Service)
-				}
+				r.AddDependency(svc, tgt)
 			}
 		}
 	}
